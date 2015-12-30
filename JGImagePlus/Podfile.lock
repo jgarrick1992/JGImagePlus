@@ -1,0 +1,12 @@
+PODS:
+  - SDWebImage+ExtensionSupport (3.7.1.2):
+    - SDWebImage+ExtensionSupport/Core (= 3.7.1.2)
+  - SDWebImage+ExtensionSupport/Core (3.7.1.2)
+
+DEPENDENCIES:
+  - SDWebImage+ExtensionSupport (~> 3.7)
+
+SPEC CHECKSUMS:
+  SDWebImage+ExtensionSupport: 72b57456f83ccd7996b258912c749a8275309b74
+
+COCOAPODS: 0.39.0
