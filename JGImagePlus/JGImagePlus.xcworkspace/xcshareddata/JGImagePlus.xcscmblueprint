@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "E9C8AEA6DA15002518BF1804185A27B78A0F7124",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "5F1537ADD1C95841DB0C37CA92CE6A3DF1C73D47" : 0,
+    "E9C8AEA6DA15002518BF1804185A27B78A0F7124" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "3FE35142-CF9E-4CC5-A37F-B7EA33117AAE",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "5F1537ADD1C95841DB0C37CA92CE6A3DF1C73D47" : "..",
+    "E9C8AEA6DA15002518BF1804185A27B78A0F7124" : "JGImagePlus\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "JGImagePlus",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "JGImagePlus\/JGImagePlus.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/bitbucket.org\/allinpalm\/nah_ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "5F1537ADD1C95841DB0C37CA92CE6A3DF1C73D47"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/jgarrick1992\/JGImagePlus.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E9C8AEA6DA15002518BF1804185A27B78A0F7124"
+    }
+  ]
+}
