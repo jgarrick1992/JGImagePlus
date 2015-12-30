@@ -7,15 +7,15 @@
 //
 
 #import "ViewController.h"
-
-#import <SDWebImage+ExtensionSupport/SDImageCache.h>
+#import "UIImage+Plus.h"
+#import "UIImageView+WebCache.h"
 
 @interface ViewController ()
 
 // *********************************************************************************************************************
 #pragma mark - Property
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
-@property (weak, nonatomic) IBOutlet UITextField *urlTextField;
+@property (weak, nonatomic) IBOutlet UITextView *urlTextView;
 @property (weak, nonatomic) IBOutlet UIButton *getSizeBtn;
 @property (weak, nonatomic) IBOutlet UIButton *downImageBtn;
 
@@ -39,7 +39,14 @@
 #pragma mark - Private
 - (void)setupUI {
     
-    // 
+    // imageView
+    self.imageView.layer.borderColor = [UIColor grayColor].CGColor;
+    self.imageView.layer.borderWidth = 2;
+    
+    // urlTextField
+    self.urlTextView.backgroundColor = [UIColor lightGrayColor];
+    self.urlTextView.text = @"https://raw.githubusercontent.com/jgarrick1992/JGImagePlus/master/JGImagePlus/image/img.jpg";
+    
     // getSizeBtn
     [self.getSizeBtn setTitle:@"通过url获取图片大小" forState:UIControlStateNormal];
     [self.getSizeBtn addTarget:self action:@selector(getSizeBtnTapped:) forControlEvents:UIControlEventTouchUpInside];
@@ -53,9 +60,13 @@
 // *********************************************************************************************************************
 #pragma mark - Actions
 - (void)getSizeBtnTapped:(id)sender {
+   
+    CGSize size = [UIImage downloadImageSizeWithURL:self.urlTextView.text];
+    
+    NSString *message = [[NSString alloc] initWithFormat:@"ImageSize :\n width : %f \nHeight : %f", size.width, size.height];
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"alert"
-                                                    message:@""
+                                                    message:message
                                                    delegate:self
                                           cancelButtonTitle:@"canncel"
                                           otherButtonTitles:@"OK", nil];
@@ -64,7 +75,10 @@
 }
 
 - (void)downImageBtnTapped:(id)sender {
+   
+    NSURL *url = [NSURL URLWithString:self.urlTextView.text];
     
+    [self.imageView sd_setImageWithURL:url];
 }
 
 
