@@ -28,22 +28,29 @@
     if(URL == nil)
         return CGSizeZero;
     
-    NSString* absoluteString = URL.absoluteString;
+
     
 #ifdef dispatch_main_sync_safe
-    if([[SDImageCache sharedImageCache] diskImageExistsWithKey:absoluteString])
-    {
-        UIImage* image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:absoluteString];
-        if(!image)
-        {
-            NSData* data = [[SDImageCache sharedImageCache] performSelector:@selector(diskImageDataBySearchingAllPathsForKey:) withObject:URL.absoluteString];
-            image = [UIImage imageWithData:data];
-        }
-        if(!image)
-        {
-            return image.size;
-        }
+    NSString *key = [[SDWebImageManager sharedManager] cacheKeyForURL:URL];
+    UIImage *lastPreviousCachedImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:key];
+    
+    if (lastPreviousCachedImage) {
+        return lastPreviousCachedImage.size;
     }
+//    NSString* absoluteString = URL.absoluteString;
+//    if([[SDImageCache sharedImageCache] diskImageExistsWithKey:absoluteString])
+//    {
+//        UIImage* image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:absoluteString];
+//        if(!image)
+//        {
+//            NSData* data = [[SDImageCache sharedImageCache] performSelector:@selector(diskImageDataBySearchingAllPathsForKey:) withObject:URL.absoluteString];
+//            image = [UIImage imageWithData:data];
+//        }
+//        if(!image)
+//        {
+//            return image.size;
+//        }
+//    }
 #endif
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:URL];
