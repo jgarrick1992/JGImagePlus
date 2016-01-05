@@ -11,6 +11,7 @@
 #import "UIImageView+WebCache.h"
 
 #import <SDWebImage+ExtensionSupport/SDImageCache.h>
+#import <SDWebImage+ExtensionSupport/SDWebImageManager.h>
 
 @implementation UIImage (Size)
 
@@ -28,29 +29,12 @@
     if(URL == nil)
         return CGSizeZero;
     
-
-    
 #ifdef dispatch_main_sync_safe
     NSString *key = [[SDWebImageManager sharedManager] cacheKeyForURL:URL];
     UIImage *lastPreviousCachedImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:key];
-    
     if (lastPreviousCachedImage) {
         return lastPreviousCachedImage.size;
     }
-//    NSString* absoluteString = URL.absoluteString;
-//    if([[SDImageCache sharedImageCache] diskImageExistsWithKey:absoluteString])
-//    {
-//        UIImage* image = [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:absoluteString];
-//        if(!image)
-//        {
-//            NSData* data = [[SDImageCache sharedImageCache] performSelector:@selector(diskImageDataBySearchingAllPathsForKey:) withObject:URL.absoluteString];
-//            image = [UIImage imageWithData:data];
-//        }
-//        if(!image)
-//        {
-//            return image.size;
-//        }
-//    }
 #endif
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:URL];
@@ -82,6 +66,34 @@
     }
     
     return size;
+}
+
++ (UIImage *)downloadImageWithURL:(id)imageURL {
+    NSURL* URL = nil;
+    if([imageURL isKindOfClass:[NSURL class]]){
+        URL = imageURL;
+    }
+    if([imageURL isKindOfClass:[NSString class]]){
+        URL = [NSURL URLWithString:imageURL];
+    }
+    if(URL == nil)
+        return nil;
+    
+    // 是否存在缓存
+    NSString *key = [[SDWebImageManager sharedManager] cacheKeyForURL:URL];
+    UIImage *lastPreviousCachedImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:key];
+    if (lastPreviousCachedImage) {
+        return lastPreviousCachedImage;
+    }
+    
+    // 下载图片
+    NSData * data = [NSData dataWithContentsOfURL:URL];
+    UIImage* image = [[UIImage alloc] initWithData:data];
+    if(image) {
+        return image;
+    }else {
+        return nil;
+    }
 }
 
 // *******************************************

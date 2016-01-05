@@ -27,6 +27,14 @@
  *  @return CGsize
  */
 + (CGSize)downloadImageSizeWithURL:(id)imageURL;
+/**
+ *  获取图片
+ *
+ *  @param imageURL url
+ *
+ *  @return image
+ */
++ (UIImage *)downloadImageWithURL:(id)imageURL;
 
 // *******************************************
 #pragma mark - 图片变形
