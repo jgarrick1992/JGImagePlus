@@ -10,6 +10,9 @@
 #import "UIImage+Plus.h"
 #import "UIImageView+WebCache.h"
 
+#import <GLKit/GLKit.h>
+#import <ImageIO/ImageIO.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 #import <SDWebImage+ExtensionSupport/SDImageCache.h>
 #import <SDWebImage+ExtensionSupport/SDWebImageManager.h>
 
@@ -188,6 +191,108 @@
     UIGraphicsEndImageContext();
     CGImageRelease(subImageRef);
     return smallImage;
+}
+
+// *******************************************
+#pragma mark - 图片边界识别
++ (CIDetector *)highAccuracyRectangleDetector {
+    
+    static CIDetector *detector = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^
+                  {
+                      detector = [CIDetector detectorOfType:CIDetectorTypeRectangle context:nil options:@{CIDetectorAccuracy : CIDetectorAccuracyHigh}];
+                  });
+    return detector;
+}
+
++ (CIDetector *)rectangleDetetor {
+    
+    static CIDetector *detector = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^
+                  {
+                      detector = [CIDetector detectorOfType:CIDetectorTypeRectangle context:nil options:@{CIDetectorAccuracy : CIDetectorAccuracyLow,CIDetectorTracking : @(YES)}];
+                  });
+    return detector;
+}
+
++ (CIRectangleFeature *)biggestRectangleInRectangles:(NSArray *)rectangles {
+    
+    if (![rectangles count]) return nil;
+    
+    float halfPerimiterValue = 0;
+    
+    CIRectangleFeature *biggestRectangle = [rectangles firstObject];
+    
+    for (CIRectangleFeature *rect in rectangles)
+    {
+        CGPoint p1 = rect.topLeft;
+        CGPoint p2 = rect.topRight;
+        CGFloat width = hypotf(p1.x - p2.x, p1.y - p2.y);
+        
+        CGPoint p3 = rect.topLeft;
+        CGPoint p4 = rect.bottomLeft;
+        CGFloat height = hypotf(p3.x - p4.x, p3.y - p4.y);
+        
+        CGFloat currentHalfPerimiterValue = height + width;
+        
+        if (halfPerimiterValue < currentHalfPerimiterValue)
+        {
+            halfPerimiterValue = currentHalfPerimiterValue;
+            biggestRectangle = rect;
+        }
+    }
+    
+    return biggestRectangle;
+}
+
++ (CIImage *)drawHighlightOverlayForPoints:(CIImage *)image topLeft:(CGPoint)topLeft topRight:(CGPoint)topRight bottomLeft:(CGPoint)bottomLeft bottomRight:(CGPoint)bottomRight {
+    
+    CIImage *overlay = [CIImage imageWithColor:[CIColor colorWithRed:1 green:0 blue:0 alpha:0.6]];
+    overlay = [overlay imageByCroppingToRect:image.extent];
+    overlay = [overlay imageByApplyingFilter:@"CIPerspectiveTransformWithExtent" withInputParameters:@{@"inputExtent":[CIVector vectorWithCGRect:image.extent],@"inputTopLeft":[CIVector vectorWithCGPoint:topLeft],@"inputTopRight":[CIVector vectorWithCGPoint:topRight],@"inputBottomLeft":[CIVector vectorWithCGPoint:bottomLeft],@"inputBottomRight":[CIVector vectorWithCGPoint:bottomRight]}];
+    
+    return [overlay imageByCompositingOverImage:image];
+}
+
++ (CIImage *)correctPerspectiveForImage:(CIImage *)image withFeatures:(CIRectangleFeature *)rectangleFeature {
+    
+    NSMutableDictionary *rectangleCoordinates = [NSMutableDictionary new];
+    rectangleCoordinates[@"inputTopLeft"] = [CIVector vectorWithCGPoint:rectangleFeature.topLeft];
+    rectangleCoordinates[@"inputTopRight"] = [CIVector vectorWithCGPoint:rectangleFeature.topRight];
+    rectangleCoordinates[@"inputBottomLeft"] = [CIVector vectorWithCGPoint:rectangleFeature.bottomLeft];
+    rectangleCoordinates[@"inputBottomRight"] = [CIVector vectorWithCGPoint:rectangleFeature.bottomRight];
+    return [image imageByApplyingFilter:@"CIPerspectiveCorrection" withInputParameters:rectangleCoordinates];
+}
+
++ (void)saveCGImageAsJPEGToFilePath:(CGImageRef)imageRef filePath:(NSString *)filePath {
+    
+    @autoreleasepool {
+        
+        CFURLRef url = (__bridge CFURLRef)[NSURL fileURLWithPath:filePath];
+        CGImageDestinationRef destination = CGImageDestinationCreateWithURL(url, kUTTypeJPEG, 1, NULL);
+        CGImageDestinationAddImage(destination, imageRef, nil);
+        CGImageDestinationFinalize(destination);
+        CFRelease(destination);
+    }
+}
+
+// *******************************************
+#pragma mark - 图片保存
+// 图片保存
+- (void)saveImageToPhotos {
+    UIImageWriteToSavedPhotosAlbum(self, self, @selector(finishUIImageWriteToSavedPhotosAlbum:didFinishSavingWithError:contextInfo:), NULL);
+}
+
+// 指定回调方法
+- (void)finishUIImageWriteToSavedPhotosAlbum:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
+    NSString *msg = nil ;
+    if(error != NULL){
+        msg = @"保存图片失败" ;
+    }else{
+        msg = @"保存图片成功" ;
+    }
 }
 
 // *********************************************************************************************************************

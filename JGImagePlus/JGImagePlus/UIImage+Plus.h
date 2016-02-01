@@ -116,5 +116,77 @@
 //+ (UIImage*)imageContentFileWithName:(NSString*)imageName ofType:(NSString*)type;
 //+ (UIImage *)imageWithData2:(NSData *)data scale:(CGFloat)scale;
 
+// *******************************************
+#pragma mark - 图片边界识别
+/**
+ *  边界识别类型 - 高质量
+ *
+ *  @return HighAccuracy
+ */
++ (CIDetector *)highAccuracyRectangleDetector;
+
+/**
+ *  边界识别类型 - Normal
+ *
+ *  @return Normal
+ */
++ (CIDetector *)rectangleDetetor;
+
+/**
+ *  边界特征
+ *
+ *  @param rectangles 定点特征
+ *
+ *  @return 边界特征
+ */
++ (CIRectangleFeature *)biggestRectangleInRectangles:(NSArray *)rectangles;
+
+/**
+ *  边界内区域标识
+ *
+ *  @param image       image
+ *  @param topLeft     边界左顶点
+ *  @param topRight    边界右顶点
+ *  @param bottomLeft  边界左脚点
+ *  @param bottomRight 边界右脚点
+ *
+ *  @return 标识后的图片
+ */
++ (CIImage *)drawHighlightOverlayForPoints:(CIImage *)image topLeft:(CGPoint)topLeft topRight:(CGPoint)topRight bottomLeft:(CGPoint)bottomLeft bottomRight:(CGPoint)bottomRight;
+
+/**
+ *  边界内区域截取
+ *
+ *  @param image            image
+ *  @param rectangleFeature 顶点特征
+ *
+ *  @return 截取后图片
+ */
++ (CIImage *)correctPerspectiveForImage:(CIImage *)image withFeatures:(CIRectangleFeature *)rectangleFeature;
+
+/**
+ *  CGImageRef保存
+ *
+ *  @param imageRef CGImageRef
+ *  @param filePath Sandbox保存位置
+ */
++ (void)saveCGImageAsJPEGToFilePath:(CGImageRef)imageRef filePath:(NSString *)filePath;
+
+// *******************************************
+#pragma mark - 图片保存
+/**
+ *  保存当前图片到相册
+ */
+- (void)saveImageToPhotos;
+
+/**
+ *  回调方法
+ *
+ *  @param image       image
+ *  @param error       error
+ *  @param contextInfo centextInfo
+ */
+- (void)finishUIImageWriteToSavedPhotosAlbum:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo;
+
 @end
 
