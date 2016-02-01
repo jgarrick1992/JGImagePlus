@@ -1,12 +1,15 @@
 PODS:
+  - GPUImage (0.1.7)
   - SDWebImage+ExtensionSupport (3.7.1.2):
     - SDWebImage+ExtensionSupport/Core (= 3.7.1.2)
   - SDWebImage+ExtensionSupport/Core (3.7.1.2)
 
 DEPENDENCIES:
+  - GPUImage
   - SDWebImage+ExtensionSupport (~> 3.7)
 
 SPEC CHECKSUMS:
+  GPUImage: 733a5f0fab92df9de1c37ba9df520a833ccb406d
   SDWebImage+ExtensionSupport: 72b57456f83ccd7996b258912c749a8275309b74
 
 COCOAPODS: 0.39.0

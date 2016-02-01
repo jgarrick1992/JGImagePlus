@@ -38,6 +38,28 @@
 
 // *******************************************
 #pragma mark - 图片变形
+
+/**
+ *  图像区域截取
+ *  @param mCGRect    截取范围
+ *  @return 截取后图像
+ */
+- (UIImage *)imageCutWithSubRect:(CGRect)subCGRect;
+
+/**
+ *  图像压缩
+ *  @param maxDimension 最大像素
+ *  @return 压缩后图像
+ */
+- (UIImage *)imageCompressWithMaxDimension:(CGFloat)maxDimension;
+
+/**
+ *  图像旋转
+ *  @param orientation 图像旋转方向
+ *  @return 旋转后图像
+ */
+- (UIImage *)imageRotationWithOrientation:(UIImageOrientation)orientation;
+    
 /**
  *  指定大小缩放
  *
@@ -99,6 +121,24 @@
  *  @return UIimage
  */
 + (UIImage*)imageWithImage:(UIImage*)image darkValue:(float)darkValue;
+
+/**
+ *  图像二值化处理
+ *  @return 处理后图像
+ */
+- (UIImage *)imageFilterWithAdaptiveThreshold:(CGFloat)blurRadiusPixels;
+
+/**
+ *  中间值 过滤噪点
+ *  @return 处理后图像
+ */
+- (UIImage *)imageFilterWithDenoise;
+
+/**
+ *  图像边缘侵蚀
+ *  @return 处理后的图像
+ */
+- (UIImage *)imageFilterWithErosion;
 
 // *******************************************
 #pragma mark - 子图像

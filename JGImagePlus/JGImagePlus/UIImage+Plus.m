@@ -6,7 +6,7 @@
 //  Copyright © 2015 Ji Fu. All rights reserved.
 //
 
-
+#import "GPUImage.h"
 #import "UIImage+Plus.h"
 #import "UIImageView+WebCache.h"
 
@@ -101,6 +101,95 @@
 
 // *******************************************
 #pragma mark - 图片变形
+- (UIImage *)imageCutWithSubRect:(CGRect)subCGRect {
+    
+    GPUImageCropFilter *imageFilter = [[GPUImageCropFilter alloc] init];
+    imageFilter.cropRegion = subCGRect;
+    UIImage *filteredImage = [imageFilter imageByFilteringImage:self];
+    
+    return filteredImage;
+}
+
+- (UIImage *)imageCompressWithMaxDimension:(CGFloat)maxDimension {
+    
+    CGSize scaledSize =  CGSizeMake(maxDimension, maxDimension);
+    CGFloat scaleFactor;
+    
+    if (self.size.width > self.size.height) {
+        scaleFactor       = self.size.height / self.size.width;
+        scaledSize.width  = maxDimension;
+        scaledSize.height = scaledSize.width * scaleFactor;
+    } else {
+        scaleFactor       = self.size.width / self.size.height;
+        scaledSize.height = maxDimension;
+        scaledSize.width  = scaledSize.height * scaleFactor;
+    }
+    
+    UIGraphicsBeginImageContext(scaledSize);
+    [self drawInRect: CGRectMake(0, 0, scaledSize.width, scaledSize.height)];
+    UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return scaledImage;
+}
+
+- (UIImage *)imageRotationWithOrientation:(UIImageOrientation)orientation {
+    
+    CGRect rect;
+    long double rotate = 0.0;
+    float translateX   = 0;
+    float translateY   = 0;
+    float scaleX       = 1.0;
+    float scaleY       = 1.0;
+    
+    switch (orientation) {
+        case UIImageOrientationLeft:
+            rotate     = M_PI_2;
+            rect       = CGRectMake(0, 0, self.size.height, self.size.width);
+            translateX = 0;
+            translateY = -rect.size.width;
+            scaleY     = rect.size.width/rect.size.height;
+            scaleX     = rect.size.height/rect.size.width;
+            break;
+        case UIImageOrientationRight:
+            rotate     = 3 * M_PI_2;
+            rect       = CGRectMake(0, 0, self.size.height, self.size.width);
+            translateX = -rect.size.height;
+            translateY = 0;
+            scaleY     = rect.size.width/rect.size.height;
+            scaleX     = rect.size.height/rect.size.width;
+            break;
+        case UIImageOrientationDown:
+            rotate     = M_PI;
+            rect       = CGRectMake(0, 0, self.size.width, self.size.height);
+            translateX = -rect.size.width;
+            translateY = -rect.size.height;
+            break;
+        default:
+            rotate     = 0.0;
+            rect       = CGRectMake(0, 0, self.size.width, self.size.height);
+            translateX = 0;
+            translateY = 0;
+            break;
+    }
+    
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    //做CTM变换
+    CGContextTranslateCTM(context, 0.0, rect.size.height);
+    CGContextScaleCTM(context, 1.0, -1.0);
+    CGContextRotateCTM(context, rotate);
+    CGContextTranslateCTM(context, translateX, translateY);
+    
+    CGContextScaleCTM(context, scaleX, scaleY);
+    //绘制图片
+    CGContextDrawImage(context, CGRectMake(0, 0, rect.size.width, rect.size.height), self.CGImage);
+    
+    UIImage *newPic = UIGraphicsGetImageFromCurrentImageContext();
+    
+    return newPic;
+}
+
 +(UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
     
     UIGraphicsBeginImageContext( newSize );
@@ -176,6 +265,34 @@
         *greenRef = *greenRef * darkValue;
         *blueRef = *blueRef * darkValue;
     }];
+}
+
+- (UIImage *)imageFilterWithAdaptiveThreshold:(CGFloat)blurRadiusPixels {
+    if (0 == blurRadiusPixels) {
+        blurRadiusPixels = 15.0;
+    }
+    
+    GPUImageAdaptiveThresholdFilter *imageFilter = [[GPUImageAdaptiveThresholdFilter alloc] init];
+    imageFilter.blurRadiusInPixels               = 15.0;// tag blur
+    UIImage *filteredImage                       = [imageFilter imageByFilteringImage:self];
+    
+    return filteredImage;
+}
+
+- (UIImage *)imageFilterWithDenoise {
+    
+    GPUImageMedianFilter *imageFilter = [[GPUImageMedianFilter alloc] init];
+    UIImage *filteredImage            = [imageFilter imageByFilteringImage:self];
+    
+    return filteredImage;
+}
+
+- (UIImage *)imageFilterWithErosion {
+    
+    GPUImageErosionFilter  *imageFilter = [[GPUImageErosionFilter alloc] init];
+    UIImage *filteredImage = [imageFilter imageByFilteringImage:self];
+    
+    return filteredImage;
 }
 
 // *******************************************
