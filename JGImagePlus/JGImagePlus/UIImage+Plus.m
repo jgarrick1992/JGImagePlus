@@ -100,6 +100,20 @@
 }
 
 // *******************************************
+#pragma mark - 图片判断
+- (BOOL)isImageSameScaleWith:(CGFloat)scale {
+    
+    CGFloat selfScale = self.size.width / self.size.height;
+    CGFloat scaleOfImages = selfScale / scale;
+    
+    if (scaleOfImages > 1.05 || scaleOfImages < 0.95) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
+// *******************************************
 #pragma mark - 图片变形
 - (UIImage *)imageCutWithSubRect:(CGRect)subCGRect {
     
@@ -410,6 +424,32 @@
     }else{
         msg = @"保存图片成功" ;
     }
+}
+
+// *******************************************
+#pragma mark - 图片显示
+- (void)imageShowOntheView:(UIViewController *)target {
+    UIImageView *captureImageView = [[UIImageView alloc] initWithImage:self];
+    captureImageView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.7];
+    captureImageView.frame = CGRectOffset(target.view.bounds, 0, -target.view.bounds.size.height);
+    captureImageView.alpha = 1.0;
+    captureImageView.contentMode = UIViewContentModeScaleAspectFit;
+    captureImageView.userInteractionEnabled = YES;
+    [target.view addSubview:captureImageView];
+    
+    UITapGestureRecognizer *dismissTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissPreview:)];
+    [captureImageView addGestureRecognizer:dismissTap];
+    
+    [UIView animateWithDuration:0.7 delay:0.0 usingSpringWithDamping:0.8 initialSpringVelocity:0.7 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        captureImageView.frame = target.view.bounds;
+    } completion:nil];
+}
+
+- (void)dismissPreview:(UITapGestureRecognizer *)dismissTap {
+    [UIView animateWithDuration:0.7 delay:0.0 usingSpringWithDamping:0.8 initialSpringVelocity:1.0 options:UIViewAnimationOptionAllowUserInteraction animations:^ {
+    }completion:^(BOOL finished){
+        [dismissTap.view removeFromSuperview];
+    }];
 }
 
 // *********************************************************************************************************************

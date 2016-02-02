@@ -37,6 +37,17 @@
 + (UIImage *)downloadImageWithURL:(id)imageURL;
 
 // *******************************************
+#pragma mark - 图片判断
+/**
+ *  判断图片长宽比例
+ *
+ *  @param scale 比例
+ *
+ *  @return BOOL
+ */
+- (BOOL)isImageSameScaleWith:(CGFloat)scale;
+
+// *******************************************
 #pragma mark - 图片变形
 
 /**
@@ -227,6 +238,15 @@
  *  @param contextInfo centextInfo
  */
 - (void)finishUIImageWriteToSavedPhotosAlbum:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo;
+
+// *******************************************
+#pragma mark - 图片显示
+/**
+ *  图片最适应现在视图上
+ *
+ *  @param target 需要显示的视图
+ */
+- (void)imageShowOntheView:(UIViewController *)target;
 
 @end
 
