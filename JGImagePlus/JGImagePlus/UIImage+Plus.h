@@ -51,6 +51,15 @@
 #pragma mark - 图片变形
 
 /**
+ *  图像全装
+ *
+ *  @param orientation 方向
+ *
+ *  @return 处理后图像
+ */
++ (UIImage *)imageRotation:(UIImageOrientation)orientation;
+
+/**
  *  图像区域截取
  *  @param mCGRect    截取范围
  *  @return 截取后图像
